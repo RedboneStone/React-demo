@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+</body>
+<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<script type="text/babel">
+     class TodoApp extends React.Component {
+        constructor(){
+            super()
+            this.state =
+            { 
+               todos: [{
+                    content: "eat",
+                    completed: true 
+                },{
+                    content: "drink",
+                    completed: false
+                },{
+                    content: "sleep",
+                    completed: true
+                }],
+                filter: "All"
+            }
+        }
+        isAllSelected= () => {
+            return this.state.todos.every(it => it.completed)
+        }
+        toggleAllstatus = () =>{
+            if(!this.isAllSelected()){
+                this.setState({
+                    todos:
+                        this.state.todos.map(it =>{ 
+                        return {
+                            ...it,
+                            completed: true
+                        }
+                    })
+                    
+                })
+            }else {
+                this.setState({
+                    todos:
+                        this.state.todos.map(it => {
+                        return {
+                            ...it,
+                            completed: false
+                        }
+                        
+                    })
+                    
+                })
+            }
+               
+        }
+        toggleStatus=(todo)=>{
+            todo.completed = !todo.completed
+            this.forceUpdate()
+            // this.setState({
+            //     todos:this.state.todos.map(it => {
+            //         if(it == todo){
+            //             return {
+            //                 content: it.content,
+            //                 completed: !it.checked
+            //             }
+            //         } else {
+            //             return it
+            //         }
+            //     })
+            // })
+        }
+        deleteTodo = (todo)=>{
+            this.setState({
+                todos: this.state.todos.filter(it => it !== todo)
+            })
+        }
+        render(){
+
+            return (
+                <div className="todo">
+                    <div className="head">
+                        <input type="checkbox" checked={this.isAllSelected()} onChange={this.toggleAllstatus} />
+                        <input type="text"/>    
+                    </div> 
+                    <div className="show-list">
+                        <ul>
+                           {
+                               this.state.todos.map((todo,idx) => (
+                                    <li key={todo.content}>
+                                    <input type="checkbox" checked={todo.completed} onChange={(todo)=>this.toggleStatus(todo)}/>
+                                    <span>{todo.content}</span>
+                                    <button onClick={(e)=>this.deleteTodo(todo)}>&times;</button>
+                                    </li>
+                                 )
+                                )
+                            }
+                        
+                        </ul>
+                    </div>
+                </div>
+            )
+        }
+    }
+
+    ReactDOM.render(<TodoApp/>,document.getElementById("app"))
+</script>
+</html>
